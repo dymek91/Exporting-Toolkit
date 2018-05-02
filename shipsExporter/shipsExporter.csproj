@@ -1,0 +1,156 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{EC532DCF-51B3-409C-8370-026213C847A6}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>shipsExporter</RootNamespace>
+    <AssemblyName>shipsExporter</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.IO.Compression.FileSystem" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CryEngine\Chunk.cs" />
+    <Compile Include="CryEngine\Chunk_DataStream_800.cs" />
+    <Compile Include="CryEngine\Chunk_Mesh_801.cs" />
+    <Compile Include="CryEngine\Chunk_Mesh_802.cs" />
+    <Compile Include="CryEngine\Chunk_Node_824.cs" />
+    <Compile Include="CryEngine\DataStream_Colors.cs" />
+    <Compile Include="CryEngine\DataStream_Indices.cs" />
+    <Compile Include="CryEngine\DataStream_Normals.cs" />
+    <Compile Include="CryEngine\DataStream_p3f_c4b_t2s.cs" />
+    <Compile Include="CryEngine\DataStream_p3s_c4b_t2s.cs" />
+    <Compile Include="CryEngine\DataStream_Positions.cs" />
+    <Compile Include="CryEngine\DataStream_Tangents.cs" />
+    <Compile Include="CryEngine\DataStream_Tangents_SC.cs" />
+    <Compile Include="CryEngine\DataStream_Texcoords.cs" />
+    <Compile Include="CryEngine\File_ChCr_746.cs" />
+    <Compile Include="CryEngine\SC\AreaShapes.cs" />
+    <Compile Include="CryEngine\SC\AreaShape_Portal_Type18.cs" />
+    <Compile Include="CryEngine\SC\AreaShape_Portal_Type38.cs" />
+    <Compile Include="CryEngine\SC\AreaShape_VisArea_Type90.cs" />
+    <Compile Include="CryEngine\SC\AreaShape_VisArea_Type91.cs" />
+    <Compile Include="CryEngine\SC\AreaShape_VisArea_Type93.cs" />
+    <Compile Include="CryEngine\SC\AreaShape_VisArea_TypeB0.cs" />
+    <Compile Include="CryEngine\SC\Chunk_AreaShape.cs" />
+    <Compile Include="CryEngine\SC\Chunk_Objects.cs" />
+    <Compile Include="CryEngine\SC\Chunk_Unkown_Type2.cs" />
+    <Compile Include="CryEngine\SC\Chunk_Unkown_TypeD.cs" />
+    <Compile Include="CryEngine\SC\Chunk_XML.cs" />
+    <Compile Include="CryEngine\SC\Objects.cs" />
+    <Compile Include="CryEngine\SC\Object_Type1.cs" />
+    <Compile Include="CryEngine\SC\Object_Type10.cs" />
+    <Compile Include="CryEngine\SC\Object_Type7.cs" />
+    <Compile Include="CryEngine\SC\SCOC_Entities.cs" />
+    <Compile Include="DataForge\CryXmlB\CryXmlNode.cs" />
+    <Compile Include="DataForge\CryXmlB\CryXmlReference.cs" />
+    <Compile Include="DataForge\CryXmlB\CryXmlSerializer.cs" />
+    <Compile Include="DataForge\CryXmlB\CryXmlValue.cs" />
+    <Compile Include="DataForge\ComplexTypes\DataForgeDataMapping.cs" />
+    <Compile Include="DataForge\ComplexTypes\DataForgeEnumDefinition.cs" />
+    <Compile Include="DataForge\ComplexTypes\DataForgePropertyDefinition.cs" />
+    <Compile Include="DataForge\ComplexTypes\DataForgeRecord.cs" />
+    <Compile Include="DataForge\ComplexTypes\DataForgeStructDefinition.cs" />
+    <Compile Include="DataForge\DataForge.cs" />
+    <Compile Include="DataForge\SimpleTypes\DataForgeBoolean.cs" />
+    <Compile Include="DataForge\SimpleTypes\DataForgeDouble.cs" />
+    <Compile Include="DataForge\SimpleTypes\DataForgeEnum.cs" />
+    <Compile Include="DataForge\SimpleTypes\DataForgeGuid.cs" />
+    <Compile Include="DataForge\SimpleTypes\DataForgeInt16.cs" />
+    <Compile Include="DataForge\SimpleTypes\DataForgeInt32.cs" />
+    <Compile Include="DataForge\SimpleTypes\DataForgeInt64.cs" />
+    <Compile Include="DataForge\SimpleTypes\DataForgeInt8.cs" />
+    <Compile Include="DataForge\SimpleTypes\DataForgeLocale.cs" />
+    <Compile Include="DataForge\SimpleTypes\DataForgePointer.cs" />
+    <Compile Include="DataForge\SimpleTypes\DataForgeReference.cs" />
+    <Compile Include="DataForge\SimpleTypes\DataForgeSingle.cs" />
+    <Compile Include="DataForge\SimpleTypes\DataForgeString.cs" />
+    <Compile Include="DataForge\SimpleTypes\DataForgeStringLookup.cs" />
+    <Compile Include="DataForge\SimpleTypes\DataForgeUInt16.cs" />
+    <Compile Include="DataForge\SimpleTypes\DataForgeUInt32.cs" />
+    <Compile Include="DataForge\SimpleTypes\DataForgeUInt64.cs" />
+    <Compile Include="DataForge\SimpleTypes\DataForgeUInt8.cs" />
+    <Compile Include="DataForge\_DataForgeSerializable.cs" />
+    <Compile Include="Entities\Components\Component.cs" />
+    <Compile Include="Entities\Components\CStaticMeshComponent.cs" />
+    <Compile Include="Entities\Components\Transform.cs" />
+    <Compile Include="Entities\EntityWithComponent.cs" />
+    <Compile Include="Entities\LightGroup.cs" />
+    <Compile Include="Entities\Portal.cs" />
+    <Compile Include="Entities\PrefabObject.cs" />
+    <Compile Include="Entities\VisArea.cs" />
+    <Compile Include="EntityPrefab.cs" />
+    <Compile Include="EntityPrefab_CE54.cs" />
+    <Compile Include="EntityPrefab_CE54_Modded.cs" />
+    <Compile Include="DataForge\Enums.cs" />
+    <Compile Include="Exporter.cs" />
+    <Compile Include="ShipsExporter.cs" />
+    <Compile Include="DataForge\Extensions.cs" />
+    <Compile Include="Item.cs" />
+    <Compile Include="Loadout.cs" />
+    <Compile Include="Math\Angles3.cs" />
+    <Compile Include="Math\MathHelpers.cs" />
+    <Compile Include="Math\Matrix3x4.cs" />
+    <Compile Include="Math\Point3D.cs" />
+    <Compile Include="Math\Primitives.cs" />
+    <Compile Include="Math\Quaternion.cs" />
+    <Compile Include="Math\Vector2.cs" />
+    <Compile Include="Math\Vector3.cs" />
+    <Compile Include="Math\Vector4.cs" />
+    <Compile Include="ObjectContainer.cs" />
+    <Compile Include="ObjectContainer_SC_3_0_0.cs" />
+    <Compile Include="OLD_ObjectContainer.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ShipDefinition.cs" />
+    <Compile Include="ShipImplementation.cs" />
+    <Compile Include="Utilities\GuidUtility.cs" />
+    <Compile Include="Utilities\Utilities.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
