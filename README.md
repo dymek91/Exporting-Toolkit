@@ -1,15 +1,16 @@
 # Exporting-Toolkit
 Set of tools used in Star Citizen modding.
 
-**Ships Exporter** - create prefabs.
-**Characters Exporter** - create character definition files (.cdf)
-**Object Containers Converter** - create prefabs.
+**Ships Exporter** - create prefabs.  
+**Characters Exporter** - create character definition files (.cdf)  
+**Object Containers Converter** - create prefabs.  
 
 **Usage**
 
 1. Put shipsExporter.exe, charactersExporter.exe and socConverter.exe in single folder.
 
   ![example1][example1] 
+  
 2. Create data folder.
 3. Copy from Data.p4k:
   * Copy Data.p4k/Data/ObjectContainers to data/ObjectContainers
@@ -17,6 +18,7 @@ Set of tools used in Star Citizen modding.
   * Copy Data.p4k/Data/Scripts to data/Scripts
   
   ![example2][example2] 
+  
 4. Run selected tool.
 
 
