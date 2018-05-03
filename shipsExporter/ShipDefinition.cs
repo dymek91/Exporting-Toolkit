@@ -89,7 +89,7 @@ namespace shipsExporter
             string fileName = Path.GetFileNameWithoutExtension(filePath);
             if(File.Exists(filePath))
             {
-                XDocument xmlDoc = XDocument.Load(filePath);
+                XDocument xmlDoc = XDocumentHelper.Load(filePath);
                 shipLoadout = new Loadout(xmlDoc, fileName, filePath);
             }
         }
@@ -99,7 +99,7 @@ namespace shipsExporter
             string fileFolder = Path.GetDirectoryName(filePath);
             if (File.Exists(filePath))
             {
-                XDocument xmlDoc = XDocument.Load(filePath);
+                XDocument xmlDoc = XDocumentHelper.Load(filePath);
                 shipImplementation = new ShipImplementation(xmlDoc, fileFolder);
             }
         }

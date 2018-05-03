@@ -19,17 +19,26 @@ namespace shipsExporter
          
         override public void Init()
         {
-            Console.WriteLine("Loading items.");
-            LoadItemIterfaces("./data/Scripts/Entities/Items");
-            LoadItems("./data/Scripts/Entities/Items");
-            Console.WriteLine("Loading DataForge.");
-            LoadDataForge("./data/Game.dcb"); 
-            Console.WriteLine("Loading items from DataForge.");
-            LoadItemsFromDataforge("./data/Game.xml");
-            Console.WriteLine("Exporting Cubemaps.");
-            ExportAllCubemaps("./data/ObjectContainers");
-            Console.WriteLine("Loading ships definitions.");
-            LoadShipsDefinitions("./data/Game.xml"); 
+            try
+            {
+                Console.WriteLine("Loading items.");
+                LoadItemIterfaces("./data/Scripts/Entities/Items");
+                LoadItems("./data/Scripts/Entities/Items");
+                Console.WriteLine("Loading DataForge.");
+                LoadDataForge("./data/Game.dcb");
+                Console.WriteLine("Loading items from DataForge.");
+                LoadItemsFromDataforge("./data/Game.xml");
+                Console.WriteLine("Exporting Cubemaps.");
+                ExportAllCubemaps("./data/ObjectContainers");
+                Console.WriteLine("Loading ships definitions.");
+                LoadShipsDefinitions("./data/Game.xml");
+            }
+            catch(FormatException e)
+            {
+                Console.Write("[ERROR] ");
+                Console.WriteLine(e.Message);
+                SuccessfullyLoaded = false;
+            }
         }
 
         public ShipImplementation GetShipImplementation(string shipname)

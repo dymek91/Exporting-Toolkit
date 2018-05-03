@@ -35,7 +35,7 @@ namespace shipsExporter
                         XElement parentLoudoutEl = element.Element("Loadouts").Element("Loadout");
                         string parentLoudoutPath = "./data/" + parentLoudoutEl.Attribute("loadout").Value;
 
-                        XDocument xml = XDocument.Load(parentLoudoutPath);
+                        XDocument xml = XDocumentHelper.Load(parentLoudoutPath);
                         string name = Path.GetFileNameWithoutExtension(parentLoudoutPath); ;
 
                         parentLoadout = new Loadout(xml, name, parentLoudoutPath);

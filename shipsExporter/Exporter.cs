@@ -96,7 +96,7 @@ namespace shipsExporter
                 foreach (var file in Directory.GetFiles(path, "*.xml", SearchOption.AllDirectories))
                 {
                     //Console.WriteLine(file);
-                    XDocument xml = XDocument.Load(file);
+                    XDocument xml = XDocumentHelper.Load(file);
                     IEnumerable<XElement> elements = xml.Elements();
                     foreach (var el in elements)
                     {
@@ -141,7 +141,7 @@ namespace shipsExporter
                 foreach (var file in Directory.GetFiles(path, "*.xml", SearchOption.AllDirectories))
                 {
                     //Console.WriteLine(file);
-                    XDocument xml = XDocument.Load(file);
+                    XDocument xml = XDocumentHelper.Load(file);
                     IEnumerable<XElement> elements = xml.Elements();
                     foreach (var el in elements)
                     {
@@ -264,7 +264,7 @@ namespace shipsExporter
                 foreach (var file in Directory.GetFiles(path, "*.xml", SearchOption.AllDirectories))
                 {
                     //Console.WriteLine(file);
-                    XDocument xml = XDocument.Load(file);
+                    XDocument xml = XDocumentHelper.Load(file);
                     string name = Path.GetFileNameWithoutExtension(file);
                     Loadout loadout = new Loadout(xml, name, file);
                     if (loadout.name != null)

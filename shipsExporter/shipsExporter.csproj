@@ -119,6 +119,7 @@
     <Compile Include="EntityPrefab_CE54_Modded.cs" />
     <Compile Include="DataForge\Enums.cs" />
     <Compile Include="Exporter.cs" />
+    <Compile Include="Helpers.cs" />
     <Compile Include="ShipsExporter.cs" />
     <Compile Include="DataForge\Extensions.cs" />
     <Compile Include="Item.cs" />

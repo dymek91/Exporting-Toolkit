@@ -21,6 +21,7 @@ namespace unforge
 
     public static class CryXmlSerializer
     {
+        static string fileToOpen="";
         public static Int64 ReadInt64(this BinaryReader br, ByteOrderEnum byteOrder = ByteOrderEnum.BigEndian)
         {
             var bytes = new Byte[] {
@@ -117,6 +118,7 @@ namespace unforge
 
         public static XmlDocument ReadFile(String inFile, ByteOrderEnum byteOrder = ByteOrderEnum.AutoDetect, Boolean writeLog = false)
         {
+            fileToOpen = inFile;
             return CryXmlSerializer.ReadStream(File.OpenRead(inFile), byteOrder, writeLog);
         }
 
@@ -140,7 +142,7 @@ namespace unforge
                 }
                 else if (peek != 'C')
                 {
-                    throw new FormatException("Unknown File Format"); // Unknown file format
+                    throw new FormatException(String.Format("Unknown File Format {0}", fileToOpen)); // Unknown file format
                 }
 
                 String header = br.ReadFString(7);
@@ -155,7 +157,7 @@ namespace unforge
                 }
                 else
                 {
-                    throw new FormatException("Unknown File Format");
+                    throw new FormatException(String.Format("Unknown File Format {0}", fileToOpen));
                 }
 
                 var headerLength = br.BaseStream.Position;
