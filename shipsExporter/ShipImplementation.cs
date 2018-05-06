@@ -14,14 +14,16 @@ namespace shipsExporter
         public List<ObjectContainer> objectContainers = new List<ObjectContainer>();
         public List<Modification> modifications = new List<Modification>();
         public List<Paint> paints = new List<Paint>();
-        public string name; 
+        public string name;
+        List<Item> itemsList;
 
         public ShipImplementation()
         {
 
         }
-        public ShipImplementation(XDocument xmlDoc,string pathFolder)
+        public ShipImplementation(XDocument xmlDoc,string pathFolder, List<Item> items)
         {
+            itemsList = items;
             XElement el = xmlDoc.Root; 
                 if (el.Name == "Vehicle")
                 {
@@ -174,7 +176,7 @@ namespace shipsExporter
                 string portName = ell.Attribute("portName").Value;
                 string filename = ell.Attribute("filename").Value;
                 // Console.WriteLine("portname {0}", portName);
-                objectContainers.Add(new ObjectContainer(filename, portName));
+                objectContainers.Add(new ObjectContainer(filename, portName,itemsList));
 
             }
             return objectContainers;

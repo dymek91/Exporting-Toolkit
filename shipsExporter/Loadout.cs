@@ -20,10 +20,29 @@ namespace shipsExporter
         {
 
         }
+        public Loadout(string filePath)
+        { 
+            string fileName = Path.GetFileNameWithoutExtension(filePath);
+            if (File.Exists(filePath))
+            {
+                XDocument xmlDoc = XDocumentHelper.Load(filePath);
+                XElement element = xmlDoc.Element("Loadout");
+                Load(element, fileName, filePath);
+            }
+        }
+        public Loadout(XElement element, string loadoutName, string loadoutPath)
+        { 
+            Load(element, loadoutName, loadoutPath);
+        }
         public Loadout(XDocument xmlDoc,string loadoutName,string loadoutPath)
         { 
             XElement element = xmlDoc.Element("Loadout");
-            if (element!=null)
+            Load(element,  loadoutName,  loadoutPath);
+        }
+        void Load(XElement el, string loadoutName, string loadoutPath)
+        {
+            XElement element = el;
+            if (element != null)
             {
                 name = loadoutName;
                 path = loadoutPath;
@@ -50,7 +69,7 @@ namespace shipsExporter
                     if (qualityEl.Attribute("wear") != null) quality.wear = qualityEl.Attribute("wear").Value;
                     if (qualityEl.Attribute("dirt") != null) quality.dirt = qualityEl.Attribute("dirt").Value;
                 }
-            } 
+            }
         }
 
         public ItemPort GetItemPort(string itemPortName)
@@ -89,6 +108,7 @@ namespace shipsExporter
         public List<ItemPort> itemPorts = new List<ItemPort>();
         public string portName;
         public string itemName;
+        public string helperName;
         public string tag;
         public string wear;
         public string dirt;

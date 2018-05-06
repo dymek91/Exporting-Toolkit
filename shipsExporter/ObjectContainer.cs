@@ -16,6 +16,7 @@ namespace shipsExporter
     {
         File_ChCr_746 socFile;
 
+        List<Item> itemsList;
         string objectContainersVer = "3_0_0";
         public string SocpakPath { get; }
         public string name;
@@ -41,8 +42,9 @@ namespace shipsExporter
         /// </summary>
         /// <param name="path">socpak archive path</param>
         /// <param name="port">portName</param>
-        public ObjectContainer(string path, string port)
+        public ObjectContainer(string path, string port, List<Item> items)
         {
+            itemsList = items;
             SocpakPath = path;
             portName = port;
             name = Path.GetFileNameWithoutExtension(path);
@@ -61,8 +63,9 @@ namespace shipsExporter
             }
             
         }
-        ObjectContainer(string path, string port, string childname,bool isExternal,string childPath)
+        ObjectContainer(string path, string port, string childname,bool isExternal,string childPath, List<Item> items)
         {
+            itemsList = items;
             SocpakPath = path;
             portName = port;
             name = childPath;
@@ -134,7 +137,7 @@ namespace shipsExporter
                     if (el.Attribute("class") != null) child.Class = el.Attribute("class").Value;
                     if (el.Attribute("label") != null) child.Label = el.Attribute("label").Value;
 
-                    child.Soc = new ObjectContainer(path, port, child.Name, child.IsExternal(), child.Path);
+                    child.Soc = new ObjectContainer(path, port, child.Name, child.IsExternal(), child.Path,itemsList);
 
                     childs.Add(child);
                 }
@@ -282,313 +285,7 @@ namespace shipsExporter
         //{
         //    ExtractLightEntity(DecodeCryXml(byteArray, cryXmlHeaderOffset));
         //}
-        /// <summary>
-        /// Exctract GeomEntity objects from XML chunk
-        /// </summary>
-        /// <param name="xml"></param>
-        void ExtractGeomEntity(string xmlstr)
-        {
-            //try
-            //{
-                if (xmlstr.Length>0)
-                {
-                    //bool decoded = false;
-                    //string label = xmlstr.Substring(0,6);
-                    //Console.WriteLine("label {0}", label);
-                    //if (label != "CryXml") decoded = true; 
-                    //if(!decoded)
-                    //{
-                    //    xmlstr = DecodeCryXml(xmlstr, cryXmlHeaderOffset);
-                    //    decoded = true;
-                    //}
-                    //if (decoded)
-                    //{
-                        TextReader tr = new StringReader(xmlstr);
-                        XDocument xml = XDocument.Load(tr);
-                        string layerguid = Guid.NewGuid().ToString();
-                        foreach (XElement el in xml.Descendants("Entity"))
-                        {
-                            if (el.Attribute("EntityClass") != null) if (el.Attribute("EntityClass").Value == "GeomEntity")
-                                {
-                                    PrefabObject prObj = new PrefabObject();
-                                    prObj.Name = el.Attribute("Name").Value;
-                                    //Console.WriteLine(prObj.Name);
-                                    //if(prObj.Name=="lmp_emergency_a-071")
-                                    //{
-                                    //    throw new System.ArgumentException("lmp_emergency_a-071", "original");
-                                    //}
-                                    if (el.Attribute("Pos") != null) prObj.Pos = el.Attribute("Pos").Value;
-                            if (el.Attribute("Rotate") != null)
-                            {
-                                prObj.Rotate = el.Attribute("Rotate").Value;
-                               // Quaternion quat = new Quaternion( prObj.GetRotate().y, prObj.GetRotate().z, prObj.GetRotate().w, prObj.GetRotate().x);
-                                //quat =ValidateQuaternion(quat);
-                               // Vector4 quatV = new Vector4(quat.x, quat.y, quat.z, quat.w);
-                               // prObj.SetRotate(quatV);
-                            }
-                                    if (el.Attribute("Scale") != null) prObj.Scale = el.Attribute("Scale").Value;
-                                    prObj.EntityClass = el.Attribute("EntityClass").Value;
-                                    prObj.Type = el.Attribute("EntityClass").Value;
-                                    prObj.Id = GuidUtility.GenID("sdfsdf3424"+ prObj.Name+ prObj.EntityClass);
-                                    prObj.Layer = el.Attribute("Layer").Value;
-                                    if (el.Attribute("Geometry") != null)
-                                    {
-                                        prObj.Geometry = el.Attribute("Geometry").Value;
-                                    }
-                                    else
-                                    {
-                                        prObj.Geometry = el.Element("PropertiesDataCore").Element("EntityGeometryResource").Element("Geometry").Element("Geometry").Element("Geometry").Attribute("path").Value;
-                                    }
-                                    byte[] asciiBytes = Encoding.ASCII.GetBytes(el.Attribute("Layer").Value);
-                                    prObj.LayerGUID = layerguid;
-                                    prObj.LodRatio = lodRatio;
-                                    prefabObjects.Add(prObj);
-                                }
-                        }
-                    //} 
-                }
-            //}
-            //catch(Exception e)
-            //{
-            //    Console.WriteLine("|{0}|",xmlstr);
-            //    Console.Read();
-            //    throw;
-            //}
-        }
-        void ExtractLightEntity(string xmlstr)
-        {
-            
-            if (xmlstr.Length > 0)
-            {
-                TextReader tr = new StringReader(xmlstr);
-                XDocument xml = XDocument.Load(tr);
-                string layerguid = GuidUtility.GenID("Main");
-                foreach (XElement el in xml.Descendants("Entity"))
-                {
-                    if (el.Attribute("EntityClass") != null) if (el.Attribute("EntityClass").Value == "Light")
-                        {
-                            PrefabObject prObj = new PrefabObject();
-                            prObj.Name = el.Attribute("Name").Value;
-                            if (el.Attribute("Pos") != null)
-                            {
-                                prObj.Pos = el.Attribute("Pos").Value;
-                            }
-                            else
-                            {
-                                prObj.Pos = "0,0,0";
-                            }
-                            if (el.Attribute("Rotate") != null) prObj.Rotate = el.Attribute("Rotate").Value;
-                            if (el.Attribute("Scale") != null) prObj.Scale = el.Attribute("Scale").Value;
-                            prObj.EntityClass = el.Attribute("EntityClass").Value;
-                            prObj.Type = el.Attribute("EntityClass").Value;
-                            prObj.Id = GuidUtility.GenID("sfdf4rgds"+prObj.Name); ;
-                            prObj.Layer = el.Attribute("Layer").Value;
-                            byte[] asciiBytes = Encoding.ASCII.GetBytes(el.Attribute("Layer").Value);
-                            prObj.LayerGUID = layerguid;
-                            prObj.Properties = el.Element("Properties");
-                            prefabObjects.Add(prObj);
-                        }
-                    if (el.Attribute("EntityClass") != null) if (el.Attribute("EntityClass").Value == "LightGroup")
-                        {
-                            PrefabObject prObj = new PrefabObject();
-                            prObj.lights = new List<Light>();
-                            prObj.Name = el.Attribute("Name").Value;
-                            if (el.Attribute("Rotate") != null) prObj.Rotate = el.Attribute("Rotate").Value;
-                            if (el.Attribute("Pos") != null) prObj.Pos = el.Attribute("Pos").Value;
-                            if (el.Attribute("Scale") != null) prObj.Scale = el.Attribute("Scale").Value;
-                            prObj.EntityClass = "LightGroup";
-                            prObj.Layer = el.Attribute("Layer").Value;
-                            prObj.Id = GuidUtility.GenID(prObj.Name+"dfgjhdkjf");
-                            int i = 0;
-                            foreach (XElement ell in el.Descendants("Light"))
-                            {
-                                XElement relativeXForm = ell.Element("RelativeXForm");
-                                Light lightEnt = new Light();
-                                lightEnt.Name = el.Attribute("Name").Value;
-                                if (relativeXForm.Attribute("translation") != null) lightEnt.translation = relativeXForm.Attribute("translation").Value;
-                                if (relativeXForm.Attribute("rotation") != null) lightEnt.rotation = relativeXForm.Attribute("rotation").Value;
-                                if (el.Attribute("Scale") != null) lightEnt.Scale = el.Attribute("Scale").Value;
-                                lightEnt.EntityClass = "Light";
-                                lightEnt.Type = "Entity";
-                                lightEnt.Id = GuidUtility.GenID();
-                                lightEnt.Layer = el.Attribute("Layer").Value;
-                                lightEnt.LayerGUID = layerguid;
-                                //lightEnt.AttachmentPointName = el.Attribute("Layer").Value; ;
-                                lightEnt.Properties = ell.Element("Properties");
-                                prObj.lights.Add(lightEnt);
-                                i++;
-                            }
-                            i = 0;
-                            foreach (XElement ell in el.Descendants("EnvironmentProbe"))
-                            {
-                                XElement relativeXForm = ell.Element("RelativeXForm");
-                                Light lightEnt = new Light();
-                                lightEnt.Name = el.Attribute("Name").Value;
-                                if (relativeXForm.Attribute("translation") != null) lightEnt.translation = relativeXForm.Attribute("translation").Value;
-                                if (relativeXForm.Attribute("rotation") != null) lightEnt.rotation = relativeXForm.Attribute("rotation").Value;
-                                if (el.Attribute("Scale") != null) lightEnt.Scale = el.Attribute("Scale").Value;
-                                lightEnt.EntityClass = "EnvironmentLight";
-                                lightEnt.Type = "Entity";
-                                lightEnt.Id = GuidUtility.GenID();
-                                lightEnt.Layer = el.Attribute("Layer").Value;
-                                lightEnt.LayerGUID = layerguid;
-                                //lightEnt.AttachmentPointName = el.Attribute("Layer").Value; ;
-                                lightEnt.Properties = ell.Element("Properties");
-                                prObj.lights.Add(lightEnt);
-                                i++;
-                            }
-                            prefabObjects.Add(prObj);
-                        }
-                }
-            }
-         
-        }
-        void ExtractEnvironmentLightEntity(string xmlstr)
-        {
-            try
-            {
-                if (xmlstr.Length > 0)
-                {
-                    TextReader tr = new StringReader(xmlstr);
-                    XDocument xml = XDocument.Load(tr);
-                    string layerguid = GuidUtility.GenID("Main");
-                    foreach (XElement el in xml.Descendants("Entity"))
-                    {
-                        if (el.Attribute("EntityClass") != null) if (el.Attribute("EntityClass").Value == "EnvironmentLight")
-                            {
-                                PrefabObject prObj = new PrefabObject();
-                                prObj.Name = el.Attribute("Name").Value;
-                                if (el.Attribute("Pos") != null) prObj.Pos = el.Attribute("Pos").Value;
-                                if (el.Attribute("Rotate") != null) prObj.Rotate = el.Attribute("Rotate").Value;
-                                if (el.Attribute("Scale") != null) prObj.Scale = el.Attribute("Scale").Value;
-                                prObj.EntityClass = el.Attribute("EntityClass").Value;
-                                prObj.Type = el.Attribute("EntityClass").Value;
-                                prObj.Id = GuidUtility.GenID("dfgdfg453"+ prObj.Name+ prObj.Pos+ prObj.EntityClass);
-                                prObj.Layer = el.Attribute("Layer").Value;
-                                byte[] asciiBytes = Encoding.ASCII.GetBytes(el.Attribute("Layer").Value);
-                                prObj.LayerGUID = layerguid;
-                                prObj.Properties = el.Element("Properties");
-                                prefabObjects.Add(prObj);
-                            }
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-                Console.WriteLine("|{0}|", xmlstr);
-                Console.WriteLine("Press Enter to continue...");
-                Console.Read();
-                //throw;
-            }
-        } 
-        void ExtractVisAreaEntity(string xmlstr)
-        {
-            try
-            {
-                if (xmlstr.Length > 0)
-                {
-                    TextReader tr = new StringReader(xmlstr);
-                    XDocument xml = XDocument.Load(tr);
-                    foreach (XElement el in xml.Descendants("Object"))
-                    {
-                        if (el.Attribute("Type") != null) if (el.Attribute("Type").Value == "VisArea")
-                            {
-                                //Console.WriteLine("sdf");
-                                PrefabObject prObj = new PrefabObject();
-                                prObj.Name = el.Attribute("Name").Value;
-                                prObj.Pos = el.Attribute("Pos").Value;
-                                //prObj.Pos = "0,0,0";
-                                if (el.Attribute("Rotate") != null) prObj.Rotate = el.Attribute("Rotate").Value;
-                                if (el.Attribute("Scale") != null) prObj.Scale = el.Attribute("Scale").Value;
-                                if (el.Attribute("GeometryFile") != null) prObj.GeometryFile = el.Attribute("GeometryFile").Value;
-                                if (el.Attribute("GeometryContainsPortals") != null) prObj.GeometryContainsPortals = el.Attribute("GeometryContainsPortals").Value;
-                                prObj.Type = el.Attribute("Type").Value;
-                                prObj.Id = GuidUtility.GenID("dfghk55ggu" + prObj.Name + prObj.Pos);
-                                prObj.Points = el.Element("Points"); 
-                                prObj.DisplayFilled = el.Attribute("DisplayFilled").Value;
-                                prObj.Height = el.Attribute("Height").Value;
-                                prObj.VisAreaPos = el.Attribute("Pos").Value;
-                                VisAreaPos = el.Attribute("Pos").Value; 
-                                prObj.FixPoints();
-                                PrefabObject prObjFromChunk = areaShapes[0].GetPrefabObjByName(el.Attribute("Name").Value);
-                                foreach (AreaShapes arShape in areaShapes)
-                                {
-                                    prObjFromChunk = arShape.GetPrefabObjByName(el.Attribute("Name").Value);
-                                } 
-                                if(prObjFromChunk.Name!=null)
-                                {
-                                    prObj.Pos = prObjFromChunk.Pos;
-                                    prObj.Rotate = prObjFromChunk.Rotate;
-                                    prObj.Height = prObjFromChunk.Height;
-                                    prObj.Points = prObjFromChunk.Points;
-                                }
-                                prefabObjects.Add(prObj);
-                            }
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("|{0}|", xmlstr);
-                Console.WriteLine( name);
-                throw;
-            }
-        }
-        void ExtractPortalEntity(string xmlstr)
-        {
-            try
-            {
-                if (xmlstr.Length > 0)
-                {
-                    TextReader tr = new StringReader(xmlstr);
-                    XDocument xml = XDocument.Load(tr);
-                    foreach (XElement el in xml.Descendants("Object"))
-                    {
-                        if (el.Attribute("Type") != null) if (el.Attribute("Type").Value == "Portal")
-                            {
-                                PrefabObject prObj = new PrefabObject();
-                                prObj.Name = el.Attribute("Name").Value;
-                                prObj.Pos = el.Attribute("Pos").Value;
-                                //prObj.Pos = "0,0,0";
-                                //if (el.Attribute("Rotate") != null) prObj.Rotate = el.Attribute("Rotate").Value;
-                                if (el.Attribute("Rotate") != null) prObj.Rotate = "1,0,0,0";
-                                if (el.Attribute("Scale") != null) prObj.Scale = el.Attribute("Scale").Value;
-                                prObj.Type = el.Attribute("Type").Value;
-                                prObj.Id = GuidUtility.GenID("dfghk55ggu" + prObj.Name + prObj.Pos+ prObj.Type);
-                                prObj.Points = el.Element("Points");
-                                prObj.DisplayFilled = el.Attribute("DisplayFilled").Value;
-                                prObj.Height = el.Attribute("Height").Value;
-                                prObj.LightBlending = el.Attribute("LightBlending").Value;
-                                prObj.LightBlendValue = el.Attribute("LightBlendValue").Value;
-                                if (VisAreaPos != null) prObj.VisAreaPos = VisAreaPos; else { Console.WriteLine(SocpakPath); Console.WriteLine(el.Attribute("Name").Value); };
-                                if (name == "frnt") Console.WriteLine(VisAreaPos);
-                                prObj.FixPoints();
-                                PrefabObject prObjFromChunk = areaShapes[0].GetPrefabObjByName(el.Attribute("Name").Value);
-                                foreach (AreaShapes arShape in areaShapes)
-                                {
-                                    prObjFromChunk = arShape.GetPrefabObjByName(el.Attribute("Name").Value);
-                                } 
-                                if (prObjFromChunk.Name != null)
-                                {
-                                    prObj.Pos = prObjFromChunk.Pos;
-                                    prObj.Rotate = prObjFromChunk.Rotate;
-                                    prObj.Height = prObjFromChunk.Height;
-                                    prObj.Points = prObjFromChunk.Points;
-                                }
-                                prefabObjects.Add(prObj);
-                            }
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("|{0}|", xmlstr);
-                Console.WriteLine(name);
-                Console.WriteLine(SocpakPath);
-                throw;
-            }
-        }
+        
 
         /// <summary>
         /// loading object container from socpak
@@ -683,6 +380,326 @@ namespace shipsExporter
             //ExtractVisAreaEntity(xmlSCOCEntities);
             //ExtractPortalEntity(xmlSCOCEntities);
         }
+        void ExtractGeomEntity(string xmlstr)
+        {
+            TextReader tr = new StringReader(xmlstr);
+            XDocument xml = XDocument.Load(tr);
+            XElement elSCOC_Entities = xml.Root;
+            
+            foreach(XElement elEntity in elSCOC_Entities.Elements("Entity"))
+            {
+                SCOC_Entity scocEntity = new SCOC_Entity(elEntity);
+                PrefabObject prefObj = scocEntity.GetGeomAsPrefabObject(itemsList);
+                if(prefObj!=null) prefabObjects.Add(prefObj);
+            }
+        }
+        /// <summary>
+        /// Exctract GeomEntity objects from XML chunk
+        /// </summary>
+        /// <param name="xml"></param>
+        void ExtractGeomEntityOLD(string xmlstr)
+        {
+            //try
+            //{
+            if (xmlstr.Length > 0)
+            {
+                //bool decoded = false;
+                //string label = xmlstr.Substring(0,6);
+                //Console.WriteLine("label {0}", label);
+                //if (label != "CryXml") decoded = true; 
+                //if(!decoded)
+                //{
+                //    xmlstr = DecodeCryXml(xmlstr, cryXmlHeaderOffset);
+                //    decoded = true;
+                //}
+                //if (decoded)
+                //{
+                TextReader tr = new StringReader(xmlstr);
+                XDocument xml = XDocument.Load(tr);
+                string layerguid = Guid.NewGuid().ToString();
+                foreach (XElement el in xml.Descendants("Entity"))
+                {
+                    if (el.Attribute("EntityClass") != null) if (el.Attribute("EntityClass").Value == "GeomEntity")
+                        {
+                            PrefabObject prObj = new PrefabObject();
+                            prObj.Name = el.Attribute("Name").Value;
+                            //Console.WriteLine(prObj.Name);
+                            //if(prObj.Name=="lmp_emergency_a-071")
+                            //{
+                            //    throw new System.ArgumentException("lmp_emergency_a-071", "original");
+                            //}
+                            if (el.Attribute("Pos") != null) prObj.Pos = el.Attribute("Pos").Value;
+                            if (el.Attribute("Rotate") != null)
+                            {
+                                prObj.Rotate = el.Attribute("Rotate").Value;
+                                // Quaternion quat = new Quaternion( prObj.GetRotate().y, prObj.GetRotate().z, prObj.GetRotate().w, prObj.GetRotate().x);
+                                //quat =ValidateQuaternion(quat);
+                                // Vector4 quatV = new Vector4(quat.x, quat.y, quat.z, quat.w);
+                                // prObj.SetRotate(quatV);
+                            }
+                            if (el.Attribute("Scale") != null) prObj.Scale = el.Attribute("Scale").Value;
+                            prObj.EntityClass = el.Attribute("EntityClass").Value;
+                            prObj.Type = el.Attribute("EntityClass").Value;
+                            prObj.Id = GuidUtility.GenID("sdfsdf3424" + prObj.Name + prObj.EntityClass);
+                            prObj.Layer = el.Attribute("Layer").Value;
+                            if (el.Attribute("Geometry") != null)
+                            {
+                                prObj.Geometry = el.Attribute("Geometry").Value;
+                            }
+                            else
+                            {
+                                prObj.Geometry = el.Element("PropertiesDataCore").Element("EntityGeometryResource").Element("Geometry").Element("Geometry").Element("Geometry").Attribute("path").Value;
+                            }
+                            byte[] asciiBytes = Encoding.ASCII.GetBytes(el.Attribute("Layer").Value);
+                            prObj.LayerGUID = layerguid;
+                            prObj.LodRatio = lodRatio;
+                            prefabObjects.Add(prObj);
+                        }
+                }
+                //} 
+            }
+            //}
+            //catch(Exception e)
+            //{
+            //    Console.WriteLine("|{0}|",xmlstr);
+            //    Console.Read();
+            //    throw;
+            //}
+        }
+        void ExtractLightEntity(string xmlstr)
+        {
+
+            if (xmlstr.Length > 0)
+            {
+                TextReader tr = new StringReader(xmlstr);
+                XDocument xml = XDocument.Load(tr);
+                string layerguid = GuidUtility.GenID("Main");
+                foreach (XElement el in xml.Descendants("Entity"))
+                {
+                    if (el.Attribute("EntityClass") != null) if (el.Attribute("EntityClass").Value == "Light")
+                        {
+                            PrefabObject prObj = new PrefabObject();
+                            prObj.Name = el.Attribute("Name").Value;
+                            if (el.Attribute("Pos") != null)
+                            {
+                                prObj.Pos = el.Attribute("Pos").Value;
+                            }
+                            else
+                            {
+                                prObj.Pos = "0,0,0";
+                            }
+                            if (el.Attribute("Rotate") != null) prObj.Rotate = el.Attribute("Rotate").Value;
+                            if (el.Attribute("Scale") != null) prObj.Scale = el.Attribute("Scale").Value;
+                            prObj.EntityClass = el.Attribute("EntityClass").Value;
+                            prObj.Type = el.Attribute("EntityClass").Value;
+                            prObj.Id = GuidUtility.GenID("sfdf4rgds" + prObj.Name); ;
+                            prObj.Layer = el.Attribute("Layer").Value;
+                            byte[] asciiBytes = Encoding.ASCII.GetBytes(el.Attribute("Layer").Value);
+                            prObj.LayerGUID = layerguid;
+                            prObj.Properties = el.Element("Properties");
+                            prefabObjects.Add(prObj);
+                        }
+                    if (el.Attribute("EntityClass") != null) if (el.Attribute("EntityClass").Value == "LightGroup")
+                        {
+                            PrefabObject prObj = new PrefabObject();
+                            prObj.lights = new List<Light>();
+                            prObj.Name = el.Attribute("Name").Value;
+                            if (el.Attribute("Rotate") != null) prObj.Rotate = el.Attribute("Rotate").Value;
+                            if (el.Attribute("Pos") != null) prObj.Pos = el.Attribute("Pos").Value;
+                            if (el.Attribute("Scale") != null) prObj.Scale = el.Attribute("Scale").Value;
+                            prObj.EntityClass = "LightGroup";
+                            prObj.Layer = el.Attribute("Layer").Value;
+                            prObj.Id = GuidUtility.GenID(prObj.Name + "dfgjhdkjf");
+                            int i = 0;
+                            foreach (XElement ell in el.Descendants("Light"))
+                            {
+                                XElement relativeXForm = ell.Element("RelativeXForm");
+                                Light lightEnt = new Light();
+                                lightEnt.Name = el.Attribute("Name").Value;
+                                if (relativeXForm.Attribute("translation") != null) lightEnt.translation = relativeXForm.Attribute("translation").Value;
+                                if (relativeXForm.Attribute("rotation") != null) lightEnt.rotation = relativeXForm.Attribute("rotation").Value;
+                                if (el.Attribute("Scale") != null) lightEnt.Scale = el.Attribute("Scale").Value;
+                                lightEnt.EntityClass = "Light";
+                                lightEnt.Type = "Entity";
+                                lightEnt.Id = GuidUtility.GenID();
+                                lightEnt.Layer = el.Attribute("Layer").Value;
+                                lightEnt.LayerGUID = layerguid;
+                                //lightEnt.AttachmentPointName = el.Attribute("Layer").Value; ;
+                                lightEnt.Properties = ell.Element("Properties");
+                                prObj.lights.Add(lightEnt);
+                                i++;
+                            }
+                            i = 0;
+                            foreach (XElement ell in el.Descendants("EnvironmentProbe"))
+                            {
+                                XElement relativeXForm = ell.Element("RelativeXForm");
+                                Light lightEnt = new Light();
+                                lightEnt.Name = el.Attribute("Name").Value;
+                                if (relativeXForm.Attribute("translation") != null) lightEnt.translation = relativeXForm.Attribute("translation").Value;
+                                if (relativeXForm.Attribute("rotation") != null) lightEnt.rotation = relativeXForm.Attribute("rotation").Value;
+                                if (el.Attribute("Scale") != null) lightEnt.Scale = el.Attribute("Scale").Value;
+                                lightEnt.EntityClass = "EnvironmentLight";
+                                lightEnt.Type = "Entity";
+                                lightEnt.Id = GuidUtility.GenID();
+                                lightEnt.Layer = el.Attribute("Layer").Value;
+                                lightEnt.LayerGUID = layerguid;
+                                //lightEnt.AttachmentPointName = el.Attribute("Layer").Value; ;
+                                lightEnt.Properties = ell.Element("Properties");
+                                prObj.lights.Add(lightEnt);
+                                i++;
+                            }
+                            prefabObjects.Add(prObj);
+                        }
+                }
+            }
+
+        }
+        void ExtractEnvironmentLightEntity(string xmlstr)
+        {
+            try
+            {
+                if (xmlstr.Length > 0)
+                {
+                    TextReader tr = new StringReader(xmlstr);
+                    XDocument xml = XDocument.Load(tr);
+                    string layerguid = GuidUtility.GenID("Main");
+                    foreach (XElement el in xml.Descendants("Entity"))
+                    {
+                        if (el.Attribute("EntityClass") != null) if (el.Attribute("EntityClass").Value == "EnvironmentLight")
+                            {
+                                PrefabObject prObj = new PrefabObject();
+                                prObj.Name = el.Attribute("Name").Value;
+                                if (el.Attribute("Pos") != null) prObj.Pos = el.Attribute("Pos").Value;
+                                if (el.Attribute("Rotate") != null) prObj.Rotate = el.Attribute("Rotate").Value;
+                                if (el.Attribute("Scale") != null) prObj.Scale = el.Attribute("Scale").Value;
+                                prObj.EntityClass = el.Attribute("EntityClass").Value;
+                                prObj.Type = el.Attribute("EntityClass").Value;
+                                prObj.Id = GuidUtility.GenID("dfgdfg453" + prObj.Name + prObj.Pos + prObj.EntityClass);
+                                prObj.Layer = el.Attribute("Layer").Value;
+                                byte[] asciiBytes = Encoding.ASCII.GetBytes(el.Attribute("Layer").Value);
+                                prObj.LayerGUID = layerguid;
+                                prObj.Properties = el.Element("Properties");
+                                prefabObjects.Add(prObj);
+                            }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                Console.WriteLine("|{0}|", xmlstr);
+                Console.WriteLine("Press Enter to continue...");
+                Console.Read();
+                //throw;
+            }
+        }
+        void ExtractVisAreaEntity(string xmlstr)
+        {
+            try
+            {
+                if (xmlstr.Length > 0)
+                {
+                    TextReader tr = new StringReader(xmlstr);
+                    XDocument xml = XDocument.Load(tr);
+                    foreach (XElement el in xml.Descendants("Object"))
+                    {
+                        if (el.Attribute("Type") != null) if (el.Attribute("Type").Value == "VisArea")
+                            {
+                                //Console.WriteLine("sdf");
+                                PrefabObject prObj = new PrefabObject();
+                                prObj.Name = el.Attribute("Name").Value;
+                                prObj.Pos = el.Attribute("Pos").Value;
+                                //prObj.Pos = "0,0,0";
+                                if (el.Attribute("Rotate") != null) prObj.Rotate = el.Attribute("Rotate").Value;
+                                if (el.Attribute("Scale") != null) prObj.Scale = el.Attribute("Scale").Value;
+                                if (el.Attribute("GeometryFile") != null) prObj.GeometryFile = el.Attribute("GeometryFile").Value;
+                                if (el.Attribute("GeometryContainsPortals") != null) prObj.GeometryContainsPortals = el.Attribute("GeometryContainsPortals").Value;
+                                prObj.Type = el.Attribute("Type").Value;
+                                prObj.Id = GuidUtility.GenID("dfghk55ggu" + prObj.Name + prObj.Pos);
+                                prObj.Points = el.Element("Points");
+                                prObj.DisplayFilled = el.Attribute("DisplayFilled").Value;
+                                prObj.Height = el.Attribute("Height").Value;
+                                prObj.VisAreaPos = el.Attribute("Pos").Value;
+                                VisAreaPos = el.Attribute("Pos").Value;
+                                prObj.FixPoints();
+                                PrefabObject prObjFromChunk = areaShapes[0].GetPrefabObjByName(el.Attribute("Name").Value);
+                                foreach (AreaShapes arShape in areaShapes)
+                                {
+                                    prObjFromChunk = arShape.GetPrefabObjByName(el.Attribute("Name").Value);
+                                }
+                                if (prObjFromChunk.Name != null)
+                                {
+                                    prObj.Pos = prObjFromChunk.Pos;
+                                    prObj.Rotate = prObjFromChunk.Rotate;
+                                    prObj.Height = prObjFromChunk.Height;
+                                    prObj.Points = prObjFromChunk.Points;
+                                }
+                                prefabObjects.Add(prObj);
+                            }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("|{0}|", xmlstr);
+                Console.WriteLine(name);
+                throw;
+            }
+        }
+        void ExtractPortalEntity(string xmlstr)
+        {
+            try
+            {
+                if (xmlstr.Length > 0)
+                {
+                    TextReader tr = new StringReader(xmlstr);
+                    XDocument xml = XDocument.Load(tr);
+                    foreach (XElement el in xml.Descendants("Object"))
+                    {
+                        if (el.Attribute("Type") != null) if (el.Attribute("Type").Value == "Portal")
+                            {
+                                PrefabObject prObj = new PrefabObject();
+                                prObj.Name = el.Attribute("Name").Value;
+                                prObj.Pos = el.Attribute("Pos").Value;
+                                //prObj.Pos = "0,0,0";
+                                //if (el.Attribute("Rotate") != null) prObj.Rotate = el.Attribute("Rotate").Value;
+                                if (el.Attribute("Rotate") != null) prObj.Rotate = "1,0,0,0";
+                                if (el.Attribute("Scale") != null) prObj.Scale = el.Attribute("Scale").Value;
+                                prObj.Type = el.Attribute("Type").Value;
+                                prObj.Id = GuidUtility.GenID("dfghk55ggu" + prObj.Name + prObj.Pos + prObj.Type);
+                                prObj.Points = el.Element("Points");
+                                prObj.DisplayFilled = el.Attribute("DisplayFilled").Value;
+                                prObj.Height = el.Attribute("Height").Value;
+                                prObj.LightBlending = el.Attribute("LightBlending").Value;
+                                prObj.LightBlendValue = el.Attribute("LightBlendValue").Value;
+                                if (VisAreaPos != null) prObj.VisAreaPos = VisAreaPos; else { Console.WriteLine(SocpakPath); Console.WriteLine(el.Attribute("Name").Value); };
+                                if (name == "frnt") Console.WriteLine(VisAreaPos);
+                                prObj.FixPoints();
+                                PrefabObject prObjFromChunk = areaShapes[0].GetPrefabObjByName(el.Attribute("Name").Value);
+                                foreach (AreaShapes arShape in areaShapes)
+                                {
+                                    prObjFromChunk = arShape.GetPrefabObjByName(el.Attribute("Name").Value);
+                                }
+                                if (prObjFromChunk.Name != null)
+                                {
+                                    prObj.Pos = prObjFromChunk.Pos;
+                                    prObj.Rotate = prObjFromChunk.Rotate;
+                                    prObj.Height = prObjFromChunk.Height;
+                                    prObj.Points = prObjFromChunk.Points;
+                                }
+                                prefabObjects.Add(prObj);
+                            }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("|{0}|", xmlstr);
+                Console.WriteLine(name);
+                Console.WriteLine(SocpakPath);
+                throw;
+            }
+        }
         void MakePrefabObjects()
         {
             foreach(Objects obj in objects)
@@ -697,8 +714,8 @@ namespace shipsExporter
                     double y = geomObj.pos.y;
                     double z = geomObj.pos.z; 
                     int id = geomObj.id;
-                    CryEngine.Quaternion quat = geomObj.quaternion;
-                    CryEngine.Vector3 scale = geomObj.scale;
+                    Quaternion quat = geomObj.quaternion;
+                    Vector3 scale = geomObj.scale;
                     prefabObj.Transform34 = geomObj.rotMatrix34;
                     //quat = ValidateQuaternion(quat);
                     string objectname = Path.GetFileNameWithoutExtension(geomObj.path);

@@ -10,8 +10,33 @@ namespace socConverter
 {
     class Program
     {
+        class Exp :Exporter
+        {
+            override public void Init()
+            {
+                try
+                {
+                    Console.WriteLine("Loading items.");
+                    LoadItemIterfaces("./data/Scripts/Entities/Items");
+                    LoadItems("./data/Scripts/Entities/Items");
+                    Console.WriteLine("Loading DataForge.");
+                    LoadDataForge("./data/Game.dcb");
+                    Console.WriteLine("Loading items from DataForge.");
+                    LoadItemsFromDataforge("./data/Game.xml"); 
+                }
+                catch (FormatException e)
+                {
+                    Console.Write("[ERROR] ");
+                    Console.WriteLine(e.Message);
+                    SuccessfullyLoaded = false;
+                }
+            }
+        }
         static void Main(string[] args)
         {
+            Exp exp = new Exp();
+            exp.Init();
+
             string ocsPath = "./data/ObjectContainers";
             string ocsExportedPath = "exported/prefabs/ObjectContainers";
             Directory.CreateDirectory(ocsExportedPath);
@@ -24,7 +49,7 @@ namespace socConverter
                     string saveFilePath = ocsExportedPath + Path.ChangeExtension( localPath,"xml");
                     Directory.CreateDirectory(Path.GetDirectoryName( saveFilePath));
 
-                    ObjectContainer soc = new ObjectContainer(file, "");
+                    ObjectContainer soc = new ObjectContainer(file, "", exp.items);
                     Prefab prefab = new Prefab(soc);
 
                     string xml = prefab.GetXml(); 

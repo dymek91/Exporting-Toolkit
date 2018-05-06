@@ -31,12 +31,15 @@ namespace shipsExporter
         ShipImplementation shipImplementation;
         Loadout shipLoadout;
 
+        List<Item> itemsList;
+
         public ShipDefinition(string xmlEntityClassDefinition)
         {
 
         }
-        public ShipDefinition(XElement xmlDoc, string in_manufacturer, string in_vehicleType)
+        public ShipDefinition(XElement xmlDoc, string in_manufacturer, string in_vehicleType, List<Item> items)
         {
+            itemsList = items;
             manufacturer= in_manufacturer;
             vehicleType= in_vehicleType;
 
@@ -100,7 +103,7 @@ namespace shipsExporter
             if (File.Exists(filePath))
             {
                 XDocument xmlDoc = XDocumentHelper.Load(filePath);
-                shipImplementation = new ShipImplementation(xmlDoc, fileFolder);
+                shipImplementation = new ShipImplementation(xmlDoc, fileFolder, itemsList);
             }
         }
 

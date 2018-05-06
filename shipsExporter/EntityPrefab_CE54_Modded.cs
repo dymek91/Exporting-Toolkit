@@ -362,6 +362,16 @@ namespace shipsExporter
                         XElement obj1 = po.GetAsGeomEntity(parentid, layerid, entid, componentGuid, portName, layerName, lodRatio);
                          
                         Object.Add(obj1);
+
+                        foreach(PrefabObject childPo in po.attachments)
+                        {
+                            string childentid = GuidUtility.GenID();
+                            string childcomponentGuid = GuidUtility.GenID();
+
+                            XElement childObj = childPo.GetAsGeomEntity(entid, layerid, childentid, childcomponentGuid, childPo.AttachmentTarget, layerName, lodRatio);
+
+                            Object.Add(childObj);
+                        }
                     }
                     if (po.EntityClass == "LightGroup")
                     {

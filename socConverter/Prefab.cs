@@ -126,6 +126,16 @@ namespace socConverter
                         XElement obj1 = po.GetAsGeomEntityWithComponent(parentid, layerid, entid, componentGuid, portName, layerName, lodRatio);
 
                         elObject.Add(obj1);
+
+                        foreach (PrefabObject childPo in po.attachments)
+                        {
+                            string childentid = GuidUtility.GenID();
+                            string childcomponentGuid = GuidUtility.GenID();
+
+                            XElement childObj = childPo.GetAsGeomEntityWithComponent(entid, layerid, childentid, childcomponentGuid, po.AttachmentTarget, layerName, lodRatio);
+
+                            elObject.Add(childObj);
+                        }
                     }
                     if (po.EntityClass == "LightGroup")
                     {

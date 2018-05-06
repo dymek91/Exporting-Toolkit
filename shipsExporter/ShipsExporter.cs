@@ -139,7 +139,7 @@ namespace shipsExporter
                                 string manufacturer = Path.GetFileName( Path.GetDirectoryName(__path)); 
                                 string vehicleType = Path.GetFileName(Path.GetDirectoryName(Path.GetDirectoryName(__path)));
 
-                                ShipDefinition shipDef = new ShipDefinition(el, manufacturer, vehicleType);
+                                ShipDefinition shipDef = new ShipDefinition(el, manufacturer, vehicleType,items);
                                 if ((shipDef.GetShipImplementation()!=null) && (shipDef.GetLoadout() != null))
                                 {
                                     shipsDefinitions.Add(shipDef);
@@ -153,7 +153,7 @@ namespace shipsExporter
                                 string manufacturer = Path.GetFileName(Path.GetDirectoryName(__path));
                                 string vehicleType = Path.GetFileName(Path.GetDirectoryName(Path.GetDirectoryName(__path)));
 
-                                ShipDefinition shipDef = new ShipDefinition(el, manufacturer, vehicleType);
+                                ShipDefinition shipDef = new ShipDefinition(el, manufacturer, vehicleType,items);
                                 if ((shipDef.GetShipImplementation() != null) && (shipDef.GetLoadout() != null))
                                 {
                                     shipsDefinitions.Add(shipDef);
@@ -196,19 +196,19 @@ namespace shipsExporter
 
             return part;
         }
-        static List<ObjectContainer> LoadObjectContainers(XElement el)
-        {
-            List<ObjectContainer> objectContainers = new List<ObjectContainer>();
-            foreach (XElement ell in el.Descendants("ObjectContainer"))
-            {
-                string portName = ell.Attribute("portName").Value;
-                string filename = ell.Attribute("filename").Value;
-               // Console.WriteLine("portname {0}", portName);
-                objectContainers.Add(new ObjectContainer(filename, portName));
+        //static List<ObjectContainer> LoadObjectContainers(XElement el)
+        //{
+        //    List<ObjectContainer> objectContainers = new List<ObjectContainer>();
+        //    foreach (XElement ell in el.Descendants("ObjectContainer"))
+        //    {
+        //        string portName = ell.Attribute("portName").Value;
+        //        string filename = ell.Attribute("filename").Value;
+        //       // Console.WriteLine("portname {0}", portName);
+        //        objectContainers.Add(new ObjectContainer(filename, portName,this));
                 
-            }
-            return objectContainers;
-        }
+        //    }
+        //    return objectContainers;
+        //}
         //static List<ObjectContainer_SC_3_0_0> LoadObjectContainers3_0_0(XElement el)
         //{
         //    List<ObjectContainer_SC_3_0_0> objectContainers = new List<ObjectContainer_SC_3_0_0>();
@@ -222,84 +222,84 @@ namespace shipsExporter
         //    }
         //    return objectContainers;
         //}
-        void LoadShipsImplementations(string path)
-        { 
-            if (Directory.Exists(path))
-            {
+        //void LoadShipsImplementations(string path)
+        //{ 
+        //    if (Directory.Exists(path))
+        //    {
 
-                foreach (var file in Directory.GetFiles(path, "*.xml", SearchOption.AllDirectories))
-                {
-                   // Console.WriteLine(file);
-                    XDocument xml = XDocument.Load(file);
-                    IEnumerable<XElement> elements = xml.Elements();
-                    foreach (var el in elements)
-                    {
-                        ShipImplementation ship = new ShipImplementation();
-                        if (el.Name == "Vehicle")
-                        {
-                            ship.name = el.Attribute("name").Value;
-                            //Part part = new Part();
-                            foreach (XElement ell in el.Elements("Parts").Elements("Part"))
-                            {
-                                Part part2 = new Part();
-                                part2 = LoadParts(ell);
-                                //part.parts.Add(part2);
-                                ship.parts.Add(part2);
-                            }
-                            foreach (XElement ell in el.Elements("Modifications").Elements("Modification"))
-                            {
-                                Modification mod = new Modification(); 
-                                mod.name = ell.Attribute("name").Value;
-                                if(ell.Attribute("patchFile")!=null) mod.patchName = ell.Attribute("patchFile").Value;
-                                if (mod.patchName != null)
-                                    if(mod.patchName!="")
-                                    {
-                                        mod.trueName = Path.GetFileName(mod.patchName);
+        //        foreach (var file in Directory.GetFiles(path, "*.xml", SearchOption.AllDirectories))
+        //        {
+        //           // Console.WriteLine(file);
+        //            XDocument xml = XDocument.Load(file);
+        //            IEnumerable<XElement> elements = xml.Elements();
+        //            foreach (var el in elements)
+        //            {
+        //                ShipImplementation ship = new ShipImplementation();
+        //                if (el.Name == "Vehicle")
+        //                {
+        //                    ship.name = el.Attribute("name").Value;
+        //                    //Part part = new Part();
+        //                    foreach (XElement ell in el.Elements("Parts").Elements("Part"))
+        //                    {
+        //                        Part part2 = new Part();
+        //                        part2 = LoadParts(ell);
+        //                        //part.parts.Add(part2);
+        //                        ship.parts.Add(part2);
+        //                    }
+        //                    foreach (XElement ell in el.Elements("Modifications").Elements("Modification"))
+        //                    {
+        //                        Modification mod = new Modification(); 
+        //                        mod.name = ell.Attribute("name").Value;
+        //                        if(ell.Attribute("patchFile")!=null) mod.patchName = ell.Attribute("patchFile").Value;
+        //                        if (mod.patchName != null)
+        //                            if(mod.patchName!="")
+        //                            {
+        //                                mod.trueName = Path.GetFileName(mod.patchName);
 
-                                        if (File.Exists(path + "/" + mod.patchName + ".xml"))
-                                        {
-                                            XDocument xmlMod = XDocument.Load(File.OpenRead(path + "/" + mod.patchName + ".xml"));
+        //                                if (File.Exists(path + "/" + mod.patchName + ".xml"))
+        //                                {
+        //                                    XDocument xmlMod = XDocument.Load(File.OpenRead(path + "/" + mod.patchName + ".xml"));
 
-                                            if (xmlMod.Element("Modifications").Element("Parts")!=null)
-                                            {
-                                                foreach (XElement elPart in xmlMod.Element("Modifications").Elements("Parts").Elements("Part"))
-                                                {
-                                                    //Console.WriteLine(elPart.Attribute("name").Value);
-                                                    Part part = new Part();
-                                                    part = LoadParts(elPart);
-                                                    mod.parts.Add(part);
-                                                }
-                                            }
-                                            else
-                                            {
-                                                Console.WriteLine("No geometry Modifications for " + mod.trueName);
-                                            }
-                                            mod.objectContainers = LoadObjectContainers(xmlMod.Element("Modifications"));
-                                            ship.modifications.Add(mod);
-                                        }
-                                        else
-                                        {
-                                            Console.WriteLine("Not Found:" + path + "/" + mod.patchName + ".xml");
-                                        }
-                                    }
-                            }
-                            foreach(XElement ell in el.Elements("Paints").Elements("Paint"))
-                            {
-                                Paint paint = new Paint();
-                                paint.name = ell.Attribute("name").Value;
-                                paint.material = ell.Attribute("material").Value;
-                                ship.paints.Add(paint);
-                            }
-                            ship.objectContainers = LoadObjectContainers(el);
-                            //ship.parts.Add(part);
-                            shipsImplementations.Add(ship);
-                        }
+        //                                    if (xmlMod.Element("Modifications").Element("Parts")!=null)
+        //                                    {
+        //                                        foreach (XElement elPart in xmlMod.Element("Modifications").Elements("Parts").Elements("Part"))
+        //                                        {
+        //                                            //Console.WriteLine(elPart.Attribute("name").Value);
+        //                                            Part part = new Part();
+        //                                            part = LoadParts(elPart);
+        //                                            mod.parts.Add(part);
+        //                                        }
+        //                                    }
+        //                                    else
+        //                                    {
+        //                                        Console.WriteLine("No geometry Modifications for " + mod.trueName);
+        //                                    }
+        //                                    mod.objectContainers = LoadObjectContainers(xmlMod.Element("Modifications"));
+        //                                    ship.modifications.Add(mod);
+        //                                }
+        //                                else
+        //                                {
+        //                                    Console.WriteLine("Not Found:" + path + "/" + mod.patchName + ".xml");
+        //                                }
+        //                            }
+        //                    }
+        //                    foreach(XElement ell in el.Elements("Paints").Elements("Paint"))
+        //                    {
+        //                        Paint paint = new Paint();
+        //                        paint.name = ell.Attribute("name").Value;
+        //                        paint.material = ell.Attribute("material").Value;
+        //                        ship.paints.Add(paint);
+        //                    }
+        //                    ship.objectContainers = LoadObjectContainers(el);
+        //                    //ship.parts.Add(part);
+        //                    shipsImplementations.Add(ship);
+        //                }
                         
-                       // Console.WriteLine();
-                    }
-                }
-            }
-        }
+        //               // Console.WriteLine();
+        //            }
+        //        }
+        //    }
+        //}
         
     }
 }

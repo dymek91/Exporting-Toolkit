@@ -35,6 +35,7 @@ namespace CryEngine
         public string RenderNearest { get; set; } = "0";
         public string NoStaticDecals { get; set; } = "0";
         public string HasEntity { get; set; } = "1";
+        public string Material { get; set; } = "";
 
         public List<Component> Components { get; } = new List<Component>();
 
@@ -74,6 +75,7 @@ namespace CryEngine
             elObject.Add(new XAttribute("RenderNearest", RenderNearest));
             elObject.Add(new XAttribute("NoStaticDecals", NoStaticDecals));
             elObject.Add(new XAttribute("HasEntity", HasEntity));
+            if(Material!="") elObject.Add(new XAttribute("Material", Material));
 
             XElement components = new XElement("Components");
             foreach (Component component in Components)

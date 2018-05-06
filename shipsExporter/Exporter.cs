@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Xml.Linq;
+using System.Xml.XPath;
 using unforge;
 
 namespace shipsExporter
@@ -14,7 +15,7 @@ namespace shipsExporter
         public bool SuccessfullyLoaded { get; set; } = true;
 
         List<ItemInterface> itemIterfaces = new List<ItemInterface>();
-        List<Item> items = new List<Item>();
+        public List<Item> items = new List<Item>();
         public List<Loadout> Loadouts { get; } = new List<Loadout>();
         DataForge dataForge;
 
@@ -242,6 +243,13 @@ namespace shipsExporter
                                             }
                                         }
                                     }
+                                }
+
+                                if (el.Element("Components")!=null)
+                                {
+                                    XElement elItemPorts = el.Element("Components").XPathSelectElement("SCItem/ItemPorts");
+                                    if(elItemPorts!=null)
+                                        item.LoadItemPorts(elItemPorts);
                                 }
 
                                 //Console.WriteLine(item.name);

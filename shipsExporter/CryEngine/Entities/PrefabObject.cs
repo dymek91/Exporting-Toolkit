@@ -16,11 +16,13 @@ namespace CryEngine
         string _scale;
         string _VisAreaPos;
         public List<Light> lights;
+        public List<PrefabObject> attachments = new List<PrefabObject>();
         public string Name;
         public string Type;
         public string Layer;
         public string LayerGUID;
         public string Id;
+        public string ParentId;
         public string Rotate
         {
             get { return _rot; }
@@ -51,6 +53,7 @@ namespace CryEngine
             }
         }
         public string Geometry;
+        public string Material;
         public string LodRatio;
         public string HiddenInGame;
         public string EntityClass;
@@ -63,6 +66,8 @@ namespace CryEngine
         public string GeometryFile;
         public string GeometryContainsPortals;
         public string AttachmentPointName;
+        public string AttachmentType;
+        public string AttachmentTarget;
         Vector3 posv;
         Vector3 scalev;
         Vector3 visareaposv;
@@ -151,6 +156,11 @@ namespace CryEngine
             obj1.Add(new XAttribute("ViewDistRatio", "100"));
             obj1.Add(new XAttribute("HasEntity", "1"));
 
+            if (Material != null)
+            {
+                if (Material != "") obj1.Add(new XAttribute("Material", Material));
+            }
+
             //XElement Components = new XElement("Components");
             //XElement Component = new XElement("Component");
             //Component.Add(new XAttribute("typeId", "ec0cd266-a6d1-4774-b499-690bd6fb61ee"));
@@ -190,7 +200,12 @@ namespace CryEngine
             if (Pos != null) entityObject.Pos = Pos;
             if (Rotate != null) entityObject.Rotate = Rotate;
             if (Scale != null) entityObject.Scale = Scale;
-             
+
+            if (Material != null)
+            {
+                if (Material != "") entityObject.Material = Material;
+            }
+
             //Quaternion quaterion = new Quaternion(Transform34);
             //Angles3 rotation = new Angles3(quaterion);
             //rotation = rotation/ scalev;
