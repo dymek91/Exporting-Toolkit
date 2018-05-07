@@ -373,6 +373,17 @@ namespace shipsExporter
                             Object.Add(childObj);
                         }
                     }
+                    if (po.EntityClass == "AnimObject")
+                    {
+                        layerid = GuidUtility.GenLayerID("Main");
+                        layerName = "Main";
+                        string entid = GuidUtility.GenID();
+                        string componentGuid = GuidUtility.GenID();
+
+                        XElement obj1 = po.GetAsAnimObject(parentid, layerid, entid, componentGuid, portName, layerName, lodRatio);
+
+                        Object.Add(obj1);
+                    }
                     if (po.EntityClass == "LightGroup")
                     {
                         layerid = GuidUtility.GenLayerID("Main");

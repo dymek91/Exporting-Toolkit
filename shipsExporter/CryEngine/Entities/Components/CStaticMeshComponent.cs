@@ -9,8 +9,8 @@ namespace CryEngine
 {
     class CStaticMeshComponent : Component
     {
-        public string TypeName { get;} = "Cry::DefaultComponents::CStaticMeshComponent";
-        public string TypeGUID { get; } = "6ddd0033-6aaa-4b71-b8ea-108258205e29";
+        virtual public string TypeName { get;} = "Cry::DefaultComponents::CStaticMeshComponent";
+        virtual public string TypeGUID { get; } = "6ddd0033-6aaa-4b71-b8ea-108258205e29";
         public string CryXmlVersion { get; set; } = "2";
         public string Name { get; set; } = "";
         public string UserAdded { get; set; } = "true";

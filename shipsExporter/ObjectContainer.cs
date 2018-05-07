@@ -731,7 +731,10 @@ namespace shipsExporter
                     //prefabObj.LayerGUID = "3675a837-e15f-dfa0-db3a-"+ bytesToString(asciiBytes);
                     prefabObj.LayerGUID = GuidUtility.GenLayerID("sdf33" + objectname + prefabObj.Geometry + prefabObj.Pos);
                     prefabObj.Id = GuidUtility.GenPrefabID("sdf34gffg" + objectname + prefabObj.Geometry + prefabObj.Pos);
-                    prefabObjects.Add(prefabObj);
+
+                    //ignore %level% geoms
+                    if (!prefabObj.Geometry.StartsWith("%level%", StringComparison.OrdinalIgnoreCase))
+                       prefabObjects.Add(prefabObj);
                 }
             }
             //foreach (AreaShapes areaShape in areaShapes)

@@ -123,7 +123,7 @@ namespace socConverter
                         string componentGuid = GuidUtility.GenID();
                         //string prefid = GuidUtility.GenID("entpref" + parentid + oc.name + po.Name+ po.Geometry);
 
-                        XElement obj1 = po.GetAsGeomEntityWithComponent(parentid, layerid, entid, componentGuid, portName, layerName, lodRatio);
+                        XElement obj1 = po.GetAsEntityWithComponent(parentid, layerid, entid, componentGuid, portName, layerName, lodRatio);
 
                         elObject.Add(obj1);
 
@@ -132,11 +132,23 @@ namespace socConverter
                             string childentid = GuidUtility.GenID();
                             string childcomponentGuid = GuidUtility.GenID();
 
-                            XElement childObj = childPo.GetAsGeomEntityWithComponent(entid, layerid, childentid, childcomponentGuid, po.AttachmentTarget, layerName, lodRatio);
+                            XElement childObj = childPo.GetAsEntityWithComponent(entid, layerid, childentid, childcomponentGuid, childPo.AttachmentTarget, layerName, lodRatio);
 
                             elObject.Add(childObj);
                         }
                     }
+                    if (po.EntityClass == "AnimObject")
+                    {
+                        layerid = GuidUtility.GenLayerID("Main");
+                        layerName = "Main"; 
+                        string entid = GuidUtility.GenID();
+                        string componentGuid = GuidUtility.GenID();
+
+                        XElement obj1 = po.GetAsAnimObject(parentid, layerid, entid, componentGuid, portName, layerName, lodRatio);
+
+                        elObject.Add(obj1);
+                    }
+
                     if (po.EntityClass == "LightGroup")
                     {
                         layerid = GuidUtility.GenLayerID("Main");

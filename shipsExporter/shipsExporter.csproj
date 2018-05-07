@@ -78,6 +78,7 @@
     <Compile Include="CryEngine\ChCr\SCOC\Object_Type10.cs" />
     <Compile Include="CryEngine\ChCr\SCOC\Object_Type7.cs" />
     <Compile Include="CryEngine\ChCr\SCOC\SCOC_Entities.cs" />
+    <Compile Include="CryEngine\Entities\Components\CAnimatedMeshComponent.cs" />
     <Compile Include="CryEngine\Entities\SCOC_Entities\SCOC_Entity.cs" />
     <Compile Include="DataForge\CryXmlB\CryXmlNode.cs" />
     <Compile Include="DataForge\CryXmlB\CryXmlReference.cs" />

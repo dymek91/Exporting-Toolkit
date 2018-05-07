@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Globalization;
 using System.Xml.Linq;
 using System.Text.RegularExpressions;
+using System.IO;
 
 namespace CryEngine
 {
@@ -135,6 +136,36 @@ namespace CryEngine
             return rotv;
         }
 
+        public XElement GetAsAnimObject(string parentid, string layerid, string entid, string componentGuid, string portName, string layerName, string lodRatio)
+        {
+            XElement obj1 = new XElement("Object");
+
+            obj1.Add(new XAttribute("Name", Name));
+            if (parentid != "") obj1.Add(new XAttribute("LinkedTo", parentid));
+            obj1.Add(new XAttribute("Id", entid));
+            obj1.Add(new XAttribute("LayerGUID", layerid));
+            //obj1.Add(new XAttribute("Geometry", Geometry));
+            if (portName != "") obj1.Add(new XAttribute("AttachmentType", "CharacterBone"));
+            if (portName != "") obj1.Add(new XAttribute("AttachmentTarget", portName));
+            obj1.Add(new XAttribute("Layer", layerName));
+            if (Pos != null) obj1.Add(new XAttribute("Pos", Pos));
+            if (Rotate != null) obj1.Add(new XAttribute("Rotate", Rotate));
+            if (Scale != null) obj1.Add(new XAttribute("Scale", Scale));
+            obj1.Add(new XAttribute("Type", "Entity"));
+            obj1.Add(new XAttribute("EntityClass", "AnimObject"));
+            obj1.Add(new XAttribute("LodRatio", lodRatio));
+            obj1.Add(new XAttribute("ViewDistRatio", "100"));
+            obj1.Add(new XAttribute("HasEntity", "1"));
+
+            if (Material != null)
+            {
+                if (Material != "") obj1.Add(new XAttribute("Material", Material));
+            }
+
+            obj1.Add(Properties);
+
+            return obj1;
+        }
         public XElement GetAsGeomEntity(string parentid, string layerid,string entid,string componentGuid,string portName,string layerName,string lodRatio)
         {
             XElement obj1 = new XElement("Object");
@@ -184,7 +215,7 @@ namespace CryEngine
 
             return obj1;
         }
-        public XElement GetAsGeomEntityWithComponent(string parentid, string layerid, string entid, string componentGuid, string portName, string layerName, string lodRatio)
+        public XElement GetAsEntityWithComponent(string parentid, string layerid, string entid, string componentGuid, string portName, string layerName, string lodRatio)
         {
             EntityWithComponent entityObject = new EntityWithComponent();
 
@@ -214,8 +245,17 @@ namespace CryEngine
             //{
             //    string sdfbreak= "break";
             //}
-            CStaticMeshComponent meshComponent = new CStaticMeshComponent(componentGuid, Geometry,new Vector3(0, 0, 0), new Vector3(0, 0, 0), new Vector3(1, 1, 1));
-            entityObject.Components.Add(meshComponent);
+            if (Path.GetExtension(Geometry) == ".cgf")
+            {
+                CStaticMeshComponent meshComponent = new CStaticMeshComponent(componentGuid, Geometry, new Vector3(0, 0, 0), new Vector3(0, 0, 0), new Vector3(1, 1, 1));
+                entityObject.Components.Add(meshComponent);
+            }
+            else
+            {
+                CAnimatedMeshComponent meshComponent = new CAnimatedMeshComponent(componentGuid, Geometry, new Vector3(0, 0, 0), new Vector3(0, 0, 0), new Vector3(1, 1, 1));
+                entityObject.Components.Add(meshComponent);
+            }
+            
 
             return entityObject.Get();
         }

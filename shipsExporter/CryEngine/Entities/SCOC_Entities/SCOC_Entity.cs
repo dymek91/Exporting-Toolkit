@@ -24,13 +24,15 @@ namespace CryEngine
         public string Layer { get; set; }
         public string LayerGUID { get; set; }
 
-        public XElement Entity { get; set; } 
+        public XElement Entity { get; set; }
+        public XElement Properties { get; set; }//
 
         PropertiesDataCore propertiesDataCore;
 
         public SCOC_Entity(XElement elEntity)
         {
             Entity = elEntity;
+            if (Entity.Element("Properties") != null) Properties = Entity.Element("Properties");
 
             if (elEntity.Attribute("Name") != null) Name = elEntity.Attribute("Name").Value;
             if (elEntity.Attribute("Material") != null) Material = elEntity.Attribute("Material").Value;
@@ -144,6 +146,68 @@ namespace CryEngine
                                 }
                             } 
                         }
+                    }
+                }
+                else
+                {
+                    Item entityItem = null;
+                    foreach (Item it in itemsList)
+                    {
+                        if (it.name == EntityClass) entityItem = it;
+                    }
+                    if (entityItem != null)
+                    {
+                        if (entityItem.geometry != "")
+                        {
+                            prefabObj.Geometry = entityItem.geometry;
+                            prefabObj.Type = "GeomEntity";
+                            prefabObj.EntityClass = "GeomEntity";
+
+                            prefabObj.Name = Name;
+                            prefabObj.Layer = Layer;
+                            prefabObj.LayerGUID = LayerGUID;
+                            if (Pos != null) prefabObj.Pos = Pos;
+                            if (Rotate != null) prefabObj.Rotate = Rotate;
+                            if (Scale != null) prefabObj.Scale = Scale;
+                            if (Material != null) prefabObj.Material = Material; 
+                        }
+                    }
+                }
+            }
+            else
+            {
+                if(EntityClass== "AnimObject")
+                {
+                    prefabObj = new PrefabObject();
+                    prefabObj.Id = GuidUtility.GenID();
+
+                    prefabObj.Type = "AnimObject";
+                    prefabObj.EntityClass = "AnimObject";
+
+                    prefabObj.Name = Name;
+                    prefabObj.Layer = Layer;
+                    prefabObj.LayerGUID = LayerGUID;
+                    if (Pos != null) prefabObj.Pos = Pos;
+                    if (Rotate != null) prefabObj.Rotate = Rotate;
+                    if (Scale != null) prefabObj.Scale = Scale;
+                    if (Material != null) prefabObj.Material = Material;
+
+                    prefabObj.Properties = Properties;
+                }
+                if (EntityClass == "GeomEntity")
+                {
+
+                }
+            }
+
+            //delete %level% geoms
+            if (prefabObj != null)
+            {
+                if (prefabObj.Geometry != null)
+                {
+                    if (prefabObj.Geometry.StartsWith("%level%", StringComparison.OrdinalIgnoreCase))
+                    {
+                        prefabObj.Geometry = null;
                     }
                 }
             }
